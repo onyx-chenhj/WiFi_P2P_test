@@ -21,6 +21,7 @@ import com.duke.p2plib.p2phelper.WifiP2PHelper;
 import com.duke.p2plib.p2phelper.WifiP2PListener;
 import com.duke.p2plib.sockethelper.ClientSocketHelper;
 import com.duke.p2plib.sockethelper.SocketBase;
+import com.duke.p2plib.utils.DatetimeUtils;
 
 import java.util.Collection;
 
@@ -81,16 +82,20 @@ public class ClientSendActivity extends BaseActivity {
             @Override
             public void onClick(View v) {
                 String text = input.getText().toString();
-                clientSocketHelper.send(text + RandomColor.INSTANCE.makeRandomColor());
-                input.setText("");
+                long millis = System.currentTimeMillis();
+                String datetime = DatetimeUtils.formatDate(millis, DatetimeUtils.DATE_FORMAT_YYYYMMDD_HH_MM_SS_);
+                clientSocketHelper.send(text + datetime + " : " + millis);
+                //input.setText("");
             }
         });
 
         clientSocketHelper = new ClientSocketHelper(new SocketBase.OnReceiveListener() {
             @Override
             public void onReceived(String text) {
-                showContent.setText(text);
-                root.setBackgroundColor(RandomColor.INSTANCE.parseRandomColorInt(text));
+                long millis = System.currentTimeMillis();
+                String datetime = DatetimeUtils.formatDate(millis, DatetimeUtils.DATE_FORMAT_YYYYMMDD_HH_MM_SS_);
+                showContent.setText(text + "\n;client nowTime:" + datetime + " : " + millis);
+                //root.setBackgroundColor(RandomColor.INSTANCE.parseRandomColorInt(text));
             }
         });
     }
